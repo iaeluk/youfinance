@@ -13,24 +13,35 @@ export class TransactionService {
   constructor(private http: HttpClient) {}
 
   getTransactions(): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.apiUrl}/list`);
+    return this.http.get<Transaction[]>(`${this.apiUrl}/list`, {
+      withCredentials: true,
+    });
   }
 
   createTransaction(transaction: Transaction): Observable<any> {
     console.log(transaction);
-    return this.http.post(`${this.apiUrl}`, transaction);
+    return this.http.post(`${this.apiUrl}`, transaction, {
+      withCredentials: true,
+    });
   }
 
   deleteTransaction(transactionId: number): Observable<any> {
     console.log(`Deleting transaction with ID: ${transactionId}`);
-    return this.http.delete(`${this.apiUrl}/${transactionId}`);
+    return this.http.delete(`${this.apiUrl}/${transactionId}`, {
+      withCredentials: true,
+    });
   }
 
-  getTransactionsByDate(month:number, year:number) {
-    return this.http.get<Transaction[]>(`${this.apiUrl}/date/${month}-${year}`)
+  getTransactionsByDate(month: number, year: number) {
+    return this.http.get<Transaction[]>(
+      `${this.apiUrl}/date/${month}-${year}`,
+      { withCredentials: true }
+    );
   }
 
   getTotalAmountByExpenseName(name: string): Observable<number> {
-    return this.http.get<number>(`${this.apiUrl}/total/expense/${name}`);
+    return this.http.get<number>(`${this.apiUrl}/total/expense/${name}`, {
+      withCredentials: true,
+    });
   }
 }

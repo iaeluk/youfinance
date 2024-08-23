@@ -3,12 +3,20 @@ import { BanksComponent } from './pages/banks/banks.component';
 import { TransactionsComponent } from './pages/transactions/transactions.component';
 import { ExpensesComponent } from './pages/expenses/expenses.component';
 import { UserComponent } from './pages/user/user.component';
+import { LoginComponent } from './pages/login/login.component';
+import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: BanksComponent },
-  { path: 'banks', component: BanksComponent },
-  { path: 'transactions', component: TransactionsComponent },
-  { path: 'expenses', component: ExpensesComponent },
-  { path: 'user', component: UserComponent },
+  { path: 'login', component: LoginComponent },
+  { path: '', component: BanksComponent, canActivate: [authGuard] },
+  { path: 'banks', component: BanksComponent, canActivate: [authGuard] },
+  {
+    path: 'transactions',
+    component: TransactionsComponent,
+    canActivate: [authGuard],
+  },
+  { path: 'expenses', component: ExpensesComponent, canActivate: [authGuard] },
+  { path: 'user', component: UserComponent, canActivate: [authGuard] },
+  // { path: '', redirectTo: '/user', pathMatch: 'full' },
   { path: '**', redirectTo: '' },
 ];

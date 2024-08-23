@@ -21,6 +21,10 @@ public class Bank {
     @Column(nullable = false)
     private BigDecimal creditLimit;
 
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany(mappedBy = "bank", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "bank")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

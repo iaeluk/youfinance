@@ -13,16 +13,20 @@ export class BankService {
   constructor(private http: HttpClient) {}
 
   getBanks(): Observable<Bank[]> {
-    return this.http.get<Bank[]>(`${this.apiUrl}/list`);
+    return this.http.get<Bank[]>(`${this.apiUrl}/list`, {
+      withCredentials: true,
+    });
   }
 
   createBank(bank: Bank): Observable<any> {
     console.log(bank);
-    return this.http.post(`${this.apiUrl}`, bank);
+    return this.http.post(`${this.apiUrl}`, bank, { withCredentials: true });
   }
 
   deleteBank(bankId: number): Observable<any> {
     console.log(`Deleting transaction with ID: ${bankId}`);
-    return this.http.delete(`${this.apiUrl}/${bankId}`);
+    return this.http.delete(`${this.apiUrl}/${bankId}`, {
+      withCredentials: true,
+    });
   }
 }

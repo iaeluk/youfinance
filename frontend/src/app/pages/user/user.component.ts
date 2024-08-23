@@ -1,5 +1,6 @@
-import { AfterContentChecked, Component } from '@angular/core';
+import { AfterContentChecked, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-user',
@@ -10,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 })
 export class UserComponent implements AfterContentChecked {
   selectedTheme: string = '';
+
+  authService = inject(AuthService);
 
   ngAfterContentChecked(): void {
     let html = document.querySelector('html');
@@ -26,5 +29,9 @@ export class UserComponent implements AfterContentChecked {
 
   setTheme() {
     localStorage.setItem('theme', this.selectedTheme);
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

@@ -5,6 +5,8 @@ import com.iaeluk.finance.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -19,14 +21,14 @@ public class BankController {
     private BankService bankService;
 
     @PostMapping()
-    public ResponseEntity<Bank> saveBank(@RequestBody Bank bank) {
-        Bank newBank =  bankService.saveBank(bank);
+    public ResponseEntity<Bank> saveBank(@RequestBody Bank bank, @AuthenticationPrincipal OAuth2User principal) {
+        Bank newBank =  bankService.saveBank(bank, principal);
         return ResponseEntity.ok(newBank);
     }
 
     @GetMapping("/list")
-    public List<Bank> getBanks() {
-        return bankService.getBanks();
+    public List<Bank> getBanks(@AuthenticationPrincipal OAuth2User principal) {
+        return bankService.getBanks(principal);
     }
 
     @GetMapping("/{id}")
