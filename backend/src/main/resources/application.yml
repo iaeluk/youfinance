@@ -9,8 +9,6 @@ spring:
     hibernate:
       ddl-auto: update
       database-platform: org.hibernate.dialect.PostgreSQLDialect
-      show_sql: true
-      format_sql: true
   security:
     oauth2:
       client:
@@ -18,13 +16,10 @@ spring:
           google:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
-            scope: profile, email
-        provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/auth
-            token-uri: https://oauth2.googleapis.com/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-
+      resourceServer:
+        jwt:
+          issuer-uri: https://accounts.google.com
+          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
 
 allowed-origins: ${ALLOW_URL}
 front-url: ${FRONT_URL}

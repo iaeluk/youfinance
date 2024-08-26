@@ -3,19 +3,20 @@ package com.iaeluk.finance.service;
 import com.iaeluk.finance.model.User;
 import com.iaeluk.finance.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
 
-    public void findOrCreateUser(OAuth2User oAuth2User) {
-        String name = oAuth2User.getAttribute("name");
-        String sub = oAuth2User.getAttribute("sub");
-        String email = oAuth2User.getAttribute("email");
-        String picture = oAuth2User.getAttribute("picture");
+    public void findOrCreateUser(OidcUser oidcUser) {
+        String name = oidcUser.getFullName(); // Método conveniente para obter o nome completo
+        String sub = oidcUser.getSubject(); // Obtém o subject (sub) do ID Token
+        String email = oidcUser.getEmail(); // Obtém o email do ID Token
+        String picture = oidcUser.getPicture(); // Obtém a URL da foto do ID Token
 
         userRepository.findByEmail(email)
                 .orElseGet(() -> {

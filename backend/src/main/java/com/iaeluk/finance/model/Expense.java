@@ -17,6 +17,10 @@ public class Expense {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL)
     @JsonManagedReference(value = "expense")
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

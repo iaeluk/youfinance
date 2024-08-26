@@ -20,4 +20,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Bank> banks;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Expense> expenses;
 }
