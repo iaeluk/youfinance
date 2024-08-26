@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -12,7 +12,13 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   getUserInfo(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/user`, { withCredentials: true });
+    return this.http.get(`${this.apiUrl}/user`);
+  }
+
+  getToken(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/user/token`, {
+      withCredentials: true,
+    });
   }
 
   login() {
@@ -20,6 +26,9 @@ export class AuthService {
   }
 
   logout() {
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('tokenExpiry');
+
     window.location.href = `${this.apiUrl}/logout`;
   }
 }

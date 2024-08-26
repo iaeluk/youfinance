@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Bank } from '../models/bank.model';
 import { environment } from '../../environments/environment';
@@ -13,9 +13,7 @@ export class BankService {
   constructor(private http: HttpClient) {}
 
   getBanks(): Observable<Bank[]> {
-    return this.http.get<Bank[]>(`${this.apiUrl}/list`, {
-      withCredentials: true,
-    });
+    return this.http.get<Bank[]>(`${this.apiUrl}/list`);
   }
 
   createBank(bank: Bank): Observable<any> {
