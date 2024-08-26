@@ -18,13 +18,11 @@ export class BankService {
 
   createBank(bank: Bank): Observable<any> {
     console.log(bank);
-    return this.http.post(`${this.apiUrl}`, bank, { withCredentials: true });
+    return this.http.post(`${this.apiUrl}`, bank);
   }
 
   deleteBank(bankId: number): Observable<any> {
     console.log(`Deleting transaction with ID: ${bankId}`);
-    return this.http.delete(`${this.apiUrl}/${bankId}`, {
-      withCredentials: true,
-    });
+    return this.http.delete(`${this.apiUrl}/${bankId}`);
   }
 }

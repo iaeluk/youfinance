@@ -13,20 +13,16 @@ export class ExpenseService {
   constructor(private http: HttpClient) {}
 
   getExpenses(): Observable<Expense[]> {
-    return this.http.get<Expense[]>(`${this.apiUrl}/list`, {
-      withCredentials: true,
-    });
+    return this.http.get<Expense[]>(`${this.apiUrl}/list`);
   }
 
   createExpense(expense: Expense): Observable<any> {
     console.log(expense);
-    return this.http.post(`${this.apiUrl}`, expense, { withCredentials: true });
+    return this.http.post(`${this.apiUrl}`, expense);
   }
 
   deleteExpense(expenseId: number): Observable<any> {
     console.log(`Deleting transaction with ID: ${expenseId}`);
-    return this.http.delete(`${this.apiUrl}/${expenseId}`, {
-      withCredentials: true,
-    });
+    return this.http.delete(`${this.apiUrl}/${expenseId}`);
   }
 }
