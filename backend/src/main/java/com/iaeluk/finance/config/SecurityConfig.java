@@ -44,6 +44,8 @@ public class SecurityConfig {
                         .defaultSuccessUrl(frontUrl, true)
 
                 )
+               .sessionManagement(config ->
+                       config.sessionFixation().none())
                 .oauth2ResourceServer(rs -> rs.jwt(Customizer.withDefaults()))
                 .logout(logout -> logout
                         .logoutUrl("/logout")
