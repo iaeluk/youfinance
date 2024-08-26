@@ -21,5 +21,11 @@ spring:
           issuer-uri: https://accounts.google.com
           jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
 
+  server:
+    servlet:
+      session:
+        cookie:
+          same-site: None
+          
 allowed-origins: ${ALLOW_URL}
 front-url: ${FRONT_URL}
