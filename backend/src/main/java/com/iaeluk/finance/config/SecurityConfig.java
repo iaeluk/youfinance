@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(authorizeConfig -> {
                     authorizeConfig
-                            .requestMatchers("/user/auth/token").permitAll()
+                            .requestMatchers("/user/token").permitAll()
                             .anyRequest().authenticated();
                 })
                 .oauth2Login(
