@@ -5,9 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+//import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+//import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
+//import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,6 +20,16 @@ import java.util.Map;
 @RestController()
 @RequestMapping("/user")
 public class UserController {
+
+    @GetMapping("/public")
+    public String homePage() {
+        return "Hello from Spring boot app";
+    }
+
+    @GetMapping("/private")
+    public String privateRoute() {
+        return "Private Route";
+    }
 
     @GetMapping()
     public OAuth2User getUser(@AuthenticationPrincipal  OAuth2User user) {
@@ -34,11 +44,11 @@ public class UserController {
         return ResponseEntity.ok().body(new AuthStatus(loggedIn));
     }
 
-    @GetMapping("/q")
-    public OAuth2AuthorizedClient getQ(@RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient oa) {
-        System.out.println(oa);
-        return oa;
-    }
+//    @GetMapping("/q")
+//    public OAuth2AuthorizedClient getQ(@RegisteredOAuth2AuthorizedClient OAuth2AuthorizedClient oa) {
+//        System.out.println(oa);
+//        return oa;
+//    }
 
     @GetMapping("/cookie")
     String cookie(@AuthenticationPrincipal OidcUser user) {

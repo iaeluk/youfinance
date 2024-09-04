@@ -11,11 +11,11 @@ spring:
       database-platform: org.hibernate.dialect.PostgreSQLDialect
   security:
     oauth2:
-      client:
-        registration:
-          google:
-            client-id: ${CLIENT_ID}
-            client-secret: ${CLIENT_SECRET}
+#      client:
+#        registration:
+#          google:
+#            client-id: ${CLIENT_ID}
+#            client-secret: ${CLIENT_SECRET}
       resourceServer:
         jwt:
           issuer-uri: https://accounts.google.com
