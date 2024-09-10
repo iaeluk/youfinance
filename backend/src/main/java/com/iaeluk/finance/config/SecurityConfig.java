@@ -2,7 +2,6 @@ package com.iaeluk.finance.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,24 +9,19 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.time.Instant;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     @Autowired
-    private CustomOidcUserService customOidcUserService;
+    private UserCreationFilter userCreationFilter;
 
     @Value("${front-url}")
     private String frontUrl;
@@ -45,12 +39,11 @@ public class SecurityConfig {
                             .requestMatchers("/").permitAll()
                             .anyRequest().authenticated();
                 })
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .addFilterAfter(userCreationFilter, BearerTokenAuthenticationFilter.class)
                 .build();
-//               .oauth2Login(oauth2 -> oauth2
-//                       .userInfoEndpoint(userInfo -> userInfo
-//                               .oidcUserService(customOidcUserService))
+
 //                       .successHandler((request, response, authentication) -> {
 //                           String jwtToken = null;
 //                           Instant expiresAt = null;
@@ -81,11 +74,6 @@ public class SecurityConfig {
 //                )
 //               .build();
     }
-
- @Bean
- public JwtDecoder jwtDecoder() {
-        return JwtDecoders.fromIssuerLocation("https://accounts.google.com");
- }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {

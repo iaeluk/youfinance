@@ -1,34 +1,108 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable, inject, Inject, PLATFORM_ID } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { isPlatformBrowser } from '@angular/common';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}`;
+  private oAuthService = inject(OAuthService);
+  private router = inject(Router);
+  private isBrowser: boolean;
 
-  constructor(private http: HttpClient) {}
+  private isLoggedInSubject = new BehaviorSubject<boolean>(
+    this.checkLoginStatus()
+  );
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
-  getUserInfo(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/user`);
-  }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+    this.initConfiguration();
 
-  getToken(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/user/token`, {
-      withCredentials: true,
+    this.oAuthService.events.subscribe((e) => {
+      console.log(e);
+      if (e.type === 'token_received') {
+        this.isLoggedInSubject.next(true);
+      } else if (e.type === 'logout') {
+        this.isLoggedInSubject.next(false);
+      }
     });
   }
 
+  initConfiguration() {
+    if (this.isBrowser) {
+      const authConfig: AuthConfig = {
+        issuer: 'https://accounts.google.com',
+        strictDiscoveryDocumentValidation: false,
+        clientId:
+          '718430921035-af8gptn4knlce41vpeu60qf3d4bl84oi.apps.googleusercontent.com',
+        redirectUri: window.location.origin + '/login',
+        scope: 'profile email openid',
+        responseType: 'id_token token',
+        silentRefreshRedirectUri:
+          window.location.origin + '/silent-refresh.html',
+        useSilentRefresh: true,
+        sessionChecksEnabled: true,
+        showDebugInformation: true,
+      };
+
+      this.oAuthService.configure(authConfig);
+
+      this.oAuthService
+        .loadDiscoveryDocumentAndTryLogin()
+        .then(() => {
+          if (this.oAuthService.hasValidAccessToken()) {
+            console.log('Claims:', this.oAuthService.getIdentityClaims());
+          } else {
+            console.log('No valid token available');
+          }
+        })
+        .catch((err) => console.error('Error during OAuth2 login', err));
+      this.oAuthService.showDebugInformation = true;
+    }
+
+    this.oAuthService.setupAutomaticSilentRefresh();
+  }
+
+  private checkLoginStatus(): boolean {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('id_token');
+    }
+    return false;
+  }
+
   login() {
-    window.location.href = `${this.apiUrl}/oauth2/authorization/google`;
+    if (this.isBrowser) {
+      this.oAuthService.initImplicitFlow();
+    }
   }
 
   logout() {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('tokenExpiry');
+    if (this.isBrowser) {
+      this.oAuthService.revokeTokenAndLogout();
+      this.oAuthService.logOut();
+    }
+  }
 
-    window.location.href = `${this.apiUrl}/logout`;
+  getProfile() {
+    const profile = this.oAuthService.getIdentityClaims();
+    console.log(profile);
+    return profile;
+  }
+
+  getToken() {
+    if (this.isBrowser) {
+      return this.oAuthService.getIdToken();
+    }
+    return null;
+  }
+
+  isLoggedIn() {
+    if (this.isBrowser) {
+      return this.oAuthService.hasValidIdToken();
+    }
+    return false;
   }
 }

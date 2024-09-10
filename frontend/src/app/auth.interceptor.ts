@@ -1,19 +1,19 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  // Obtém o token do localStorage
-  const token = localStorage.getItem('jwtToken');
+  const backendUrl = environment.apiUrl;
 
-  // Se o token não estiver presente, apenas passe a requisição sem alterações
-  if (!token) {
-    return next(req);
+  if (req.url.startsWith(backendUrl)) {
+    const idToken = localStorage.getItem('id_token');
+
+    if (idToken) {
+      const clonedRequest = req.clone({
+        headers: req.headers.set('Authorization', `Bearer ${idToken}`),
+      });
+      return next(clonedRequest);
+    }
   }
 
-  // Se o token estiver presente, clone a requisição e adicione o cabeçalho Authorization
-  const clonedRequest = req.clone({
-    headers: req.headers.set('Authorization', `Bearer ${token}`),
-  });
-
-  // Passe a requisição clonada para o próximo manipulador
-  return next(clonedRequest);
+  return next(req);
 };

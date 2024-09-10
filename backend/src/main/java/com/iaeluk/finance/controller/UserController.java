@@ -1,5 +1,8 @@
 package com.iaeluk.finance.controller;
 
+import com.iaeluk.finance.model.User;
+import com.iaeluk.finance.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,6 +24,9 @@ import java.util.Map;
 @RequestMapping("/user")
 public class UserController {
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/public")
     public String homePage() {
         return "Hello from Spring boot app";
@@ -32,8 +38,13 @@ public class UserController {
     }
 
     @GetMapping()
-    public OAuth2User getUser(@AuthenticationPrincipal  OAuth2User user) {
-        return user;
+    public User getUser(@AuthenticationPrincipal Jwt jwt) {
+        // Pega o email ou sub do token JWT
+        String email = jwt.getClaim("email"); // ou String sub = jwt.getClaim("sub");
+
+        // Busque o usuário no banco de dados pelo e-mail
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 
     public record AuthStatus(boolean loggedIn) {}

@@ -1,3 +1,29 @@
-<div class="navbar bg-base-100 fixed top-0 z-10">
+<!-- <div class="navbar bg-base-100 fixed top-0 z-10">
   <a class="btn btn-ghost text-xl">You Finance</a>
+</div> -->
+<div class="navbar bg-base-100 fixed top-0 z-10 w-full">
+  <div class="flex-1">
+    <a class="btn btn-ghost text-xl">Finance You</a>
+  </div>
+  @if (isLoggedIn) {
+  <div class="flex-none gap-2">
+    <div class="dropdown dropdown-end">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+        <div class="w-10 rounded-full">
+          <img alt="Tailwind CSS Navbar component" [src]="picture" />
+        </div>
+      </div>
+      <ul
+        tabindex="0"
+        class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+      >
+        <li>
+          <a class="justify-between" [routerLink]="['/user']"> Perfil </a>
+        </li>
+        <!-- <li><a>Configurações</a></li> -->
+        <li (click)="logout()"><a>Sair</a></li>
+      </ul>
+    </div>
+  </div>
+  }
 </div>
