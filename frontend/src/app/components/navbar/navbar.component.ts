@@ -1,42 +1,51 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { UserService } from '../../services/user.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
 })
 export class NavbarComponent implements OnInit {
   router = inject(Router);
 
   name: string = '';
   email: string = '';
-  picture: string = 'man.png';
+  picture: string = '';
+
   isLoggedIn = false;
 
-  constructor(private authService: AuthService) {}
+  user: any = null;
+
+  constructor(
+    public userService: UserService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
-      console.log('isLoggedIn: ', isLoggedIn);
-      this.isLoggedIn = isLoggedIn;
-      const user = localStorage.getItem('user');
+    this.userService.user$.subscribe((user) => {
+      this.user = user;
+      console.log('User updated:', this.user);
       if (user) {
-        const parsedUser = JSON.parse(user);
-        this.name = parsedUser.name || '';
-        this.email = parsedUser.email || '';
-        this.picture = parsedUser.picture || '';
+        this.isLoggedIn = true;
+        this.name = user.name;
+        this.email = user.email;
+        this.picture = user.picture;
       }
     });
   }
 
   logout() {
+    this.isLoggedIn = false;
+
+    this.userService.clearUser();
     this.authService.logout();
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('id_token');
+
     this.router.navigate(['/login']);
   }
 }

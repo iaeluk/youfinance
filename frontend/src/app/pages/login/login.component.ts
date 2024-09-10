@@ -41,14 +41,10 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['/banks']);
       console.log('ID token:', idToken);
 
-      // get api and save in localStorage
-      this.userService.getUser().subscribe((data) => {
-        console.log(data);
-        localStorage.setItem('user', JSON.stringify(data));
+      this.userService.getUser().subscribe((user) => {
+        console.log('User', user);
+        this.userService.setUser(user);
       });
     }
-
-    // Redireciona para a página inicial ou qualquer outra página desejada
-    // this.router.navigate(['/']);
   }
 }

@@ -9,28 +9,11 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AuthService {
   private oAuthService = inject(OAuthService);
-  private router = inject(Router);
   private isBrowser: boolean;
-
-  private isLoggedInSubject = new BehaviorSubject<boolean>(
-    this.checkLoginStatus()
-  );
-  isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.initConfiguration();
-
-    this.oAuthService.events.subscribe((e) => {
-      console.log(e);
-      if (e.type === 'token_received') {
-        this.isLoggedInSubject.next(true);
-      } else if (e.type === 'logout') {
-        this.isLoggedInSubject.next(false);
-      }
-    });
-
-    this.checkUserInLocalStorage();
   }
 
   initConfiguration() {
@@ -51,18 +34,9 @@ export class AuthService {
       };
 
       this.oAuthService.configure(authConfig);
-
       this.oAuthService.loadDiscoveryDocumentAndTryLogin();
+      this.oAuthService.setupAutomaticSilentRefresh();
     }
-
-    this.oAuthService.setupAutomaticSilentRefresh();
-  }
-
-  private checkLoginStatus(): boolean {
-    if (typeof window !== 'undefined') {
-      return !!localStorage.getItem('id_token');
-    }
-    return false;
   }
 
   login() {
@@ -96,16 +70,5 @@ export class AuthService {
       return this.oAuthService.hasValidIdToken();
     }
     return false;
-  }
-
-  private checkUserInLocalStorage(): void {
-    if (this.isBrowser) {
-      const user = localStorage.getItem('user');
-      if (user) {
-        this.isLoggedInSubject.next(true);
-      } else {
-        this.isLoggedInSubject.next(false);
-      }
-    }
   }
 }
