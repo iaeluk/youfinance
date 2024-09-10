@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
@@ -56,7 +57,6 @@ public class TransactionService {
     }
 
     public List<Transaction> getTransactions() {
-        // Obter o usuário autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         User user = userRepository.findBySub(authentication.getName());
@@ -65,26 +65,15 @@ public class TransactionService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
-        // Buscar todas as despesas associadas ao usuário
         List<Expense> expenses = expenseRepository.findByUserId(user.getId());
 
-        // Buscar todos os bancos associados ao usuário
         List<Bank> banks = bankRepository.findByUserId(user.getId());
 
-        // Buscar todas as transações associadas às despesas do usuário
-        List<Transaction> expenseTransactions = expenses.stream()
-                .flatMap(expense -> expense.getTransactions().stream())
+        return Stream.concat(
+                        expenses.stream().flatMap(expense -> expense.getTransactions().stream()),
+                        banks.stream().flatMap(bank -> bank.getTransactions().stream())
+                )
                 .collect(Collectors.toList());
-
-        // Buscar todas as transações associadas aos bancos do usuário
-        List<Transaction> bankTransactions = banks.stream()
-                .flatMap(bank -> bank.getTransactions().stream())
-                .toList();
-
-        // Unir as transações de despesas e bancos
-        expenseTransactions.addAll(bankTransactions);
-
-        return expenseTransactions;
     }
 
     public Optional<Transaction> findById(Long id) {

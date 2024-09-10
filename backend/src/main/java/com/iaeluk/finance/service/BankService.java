@@ -73,8 +73,6 @@ public class BankService {
         return bankRepository.save(bank);
     }
 
-
-
     public void deleteBank(Long id) {
         bankRepository.deleteById(id);
     }

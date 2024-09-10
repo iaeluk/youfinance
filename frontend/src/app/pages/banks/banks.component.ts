@@ -56,22 +56,22 @@ export class BanksComponent implements OnInit {
 
     this.bankService.createBank(bank).subscribe({
       next: (response) => {
-        console.log('Banco criado com sucesso:', response);
+        console.log('Bank created successfully:', response);
         this.getBanks();
         this.bankName = undefined;
         this.creditLimit = undefined;
       },
-      error: (error) => console.error('Erro ao criar banco:', error),
+      error: (error) => console.error('Error creating bank:', error),
     });
   }
 
   deleteBank(id: number) {
     this.bankService.deleteBank(id).subscribe({
       next: (response) => {
-        console.log('Deletado com sucesso:', response);
+        console.log('Deleted successfully:', response);
         this.getBanks();
       },
-      error: (error) => console.error('Erro ao deletar:', error),
+      error: (error) => console.error('Error deleting:', error),
     });
     this.getBanks();
   }

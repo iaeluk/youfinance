@@ -17,6 +17,5 @@ export const routes: Routes = [
   },
   { path: 'expenses', component: ExpensesComponent, canActivate: [authGuard] },
   { path: 'user', component: UserComponent, canActivate: [authGuard] },
-  // { path: '', redirectTo: '/user', pathMatch: 'full' },
   { path: '**', redirectTo: '' },
 ];

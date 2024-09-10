@@ -34,14 +34,8 @@ export class TransactionsComponent implements OnInit {
   invoice: number | null = null;
   currentYear = new Date();
   currentYearAndMonth = undefined;
-  // `${this.currentYear.getFullYear()}-${(
-  //   this.currentYear.getMonth() + 1
-  // )
-  //   .toString()
-  //   .padStart(2, '0')}`;
 
   ngOnInit() {
-    // console.log(this.currentYearAndMonth);
     if (typeof window !== 'undefined') {
       localStorage.setItem('activeButton', 'transactions');
     }
@@ -90,11 +84,6 @@ export class TransactionsComponent implements OnInit {
       );
     });
     this.currentYearAndMonth = undefined;
-    //   `${this.currentYear.getFullYear()}-${(
-    //   this.currentYear.getMonth() + 1
-    // )
-    //   .toString()
-    //   .padStart(2, '0')}`;
   }
 
   getTransactionsByDate() {
@@ -152,13 +141,13 @@ export class TransactionsComponent implements OnInit {
 
     this.transactionService.createTransaction(transaction).subscribe({
       next: (response) => {
-        console.log('Transação criada com sucesso:', response);
+        console.log('Transaction created successfully:', response);
         this.getTransactions();
         this.amount = null;
         this.bankId = null;
         this.expenseId = null;
       },
-      error: (error) => console.error('Erro ao criar transação:', error),
+      error: (error) => console.error('Error creating transaction:', error),
     });
     this.date = this.getCurrentDateFormatted();
   }
@@ -166,10 +155,10 @@ export class TransactionsComponent implements OnInit {
   deleteTransaction(id: number) {
     this.transactionService.deleteTransaction(id).subscribe({
       next: (response) => {
-        console.log('Deletado com sucesso:', response);
+        console.log('Deleted successfully:', response);
         this.getTransactions();
       },
-      error: (error) => console.error('Erro ao deletar:', error),
+      error: (error) => console.error('Error deleting:', error),
     });
   }
 }

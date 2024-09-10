@@ -37,21 +37,21 @@ export class ExpensesComponent {
 
     this.expenseService.createExpense(expense).subscribe({
       next: (response) => {
-        console.log('Despesa criada com sucesso:', response);
+        console.log('Expense created successfully:', response);
         this.getExpenses();
         this.expenseName = undefined;
       },
-      error: (error) => console.error('Erro ao criar despesa:', error),
+      error: (error) => console.error('Error creating expense:', error),
     });
   }
 
   deleteExpense(id: number) {
     this.expenseService.deleteExpense(id).subscribe({
       next: (response) => {
-        console.log('Deletado com sucesso:', response);
+        console.log('Deleted successfully:', response);
         this.getExpenses();
       },
-      error: (error) => console.error('Erro ao deletar:', error),
+      error: (error) => console.error('Error deleting:', error),
     });
     this.getExpenses();
   }

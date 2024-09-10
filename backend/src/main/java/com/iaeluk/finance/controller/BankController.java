@@ -26,11 +26,6 @@ public class BankController {
         return ResponseEntity.ok(newBank);
     }
 
-    @GetMapping("/tt")
-    public Authentication au() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
     @GetMapping("/list")
     public List<Bank> getBanks() {
         return bankService.getBanks();

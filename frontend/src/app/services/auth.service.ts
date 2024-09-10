@@ -1,8 +1,7 @@
 import { Injectable, inject, Inject, PLATFORM_ID } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { isPlatformBrowser } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -21,8 +20,7 @@ export class AuthService {
       const authConfig: AuthConfig = {
         issuer: 'https://accounts.google.com',
         strictDiscoveryDocumentValidation: false,
-        clientId:
-          '718430921035-af8gptn4knlce41vpeu60qf3d4bl84oi.apps.googleusercontent.com',
+        clientId: environment.clientId,
         redirectUri: window.location.origin + '/login',
         scope: 'profile email openid',
         responseType: 'id_token token',
@@ -54,7 +52,6 @@ export class AuthService {
 
   getProfile() {
     const profile = this.oAuthService.getIdentityClaims();
-    console.log(profile);
     return profile;
   }
 

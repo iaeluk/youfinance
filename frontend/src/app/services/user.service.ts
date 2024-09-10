@@ -43,4 +43,8 @@ export class UserService {
   getUser(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}`);
   }
+
+  getStatus(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/status`);
+  }
 }

@@ -25,26 +25,25 @@ export class LoginComponent implements OnInit {
   }
 
   private handleAuthCallback() {
-    const fragment = window.location.hash;
-    const params = new URLSearchParams(fragment.slice(1));
+    if (typeof window !== 'undefined') {
+      const fragment = window.location.hash;
+      const params = new URLSearchParams(fragment.slice(1));
 
-    const accessToken = params.get('access_token');
-    const idToken = params.get('id_token');
+      const accessToken = params.get('access_token');
+      const idToken = params.get('id_token');
 
-    if (accessToken) {
-      localStorage.setItem('access_token', accessToken);
-      console.log('Access token:', accessToken);
-    }
+      if (accessToken) {
+        localStorage.setItem('access_token', accessToken);
+      }
 
-    if (idToken) {
-      localStorage.setItem('id_token', idToken);
-      this.router.navigate(['/banks']);
-      console.log('ID token:', idToken);
+      if (idToken) {
+        localStorage.setItem('id_token', idToken);
+        this.router.navigate(['/banks']);
 
-      this.userService.getUser().subscribe((user) => {
-        console.log('User', user);
-        this.userService.setUser(user);
-      });
+        this.userService.getUser().subscribe((user) => {
+          this.userService.setUser(user);
+        });
+      }
     }
   }
 }
