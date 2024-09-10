@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +12,7 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   private router = inject(Router);
+  private userService = inject(UserService);
 
   constructor(private authService: AuthService) {}
 
@@ -38,6 +40,12 @@ export class LoginComponent implements OnInit {
       localStorage.setItem('id_token', idToken);
       this.router.navigate(['/banks']);
       console.log('ID token:', idToken);
+
+      // get api and save in localStorage
+      this.userService.getUser().subscribe((data) => {
+        console.log(data);
+        localStorage.setItem('user', JSON.stringify(data));
+      });
     }
 
     // Redireciona para a página inicial ou qualquer outra página desejada

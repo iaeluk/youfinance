@@ -29,6 +29,8 @@ export class AuthService {
         this.isLoggedInSubject.next(false);
       }
     });
+
+    this.checkUserInLocalStorage();
   }
 
   initConfiguration() {
@@ -50,17 +52,7 @@ export class AuthService {
 
       this.oAuthService.configure(authConfig);
 
-      this.oAuthService
-        .loadDiscoveryDocumentAndTryLogin()
-        .then(() => {
-          if (this.oAuthService.hasValidAccessToken()) {
-            console.log('Claims:', this.oAuthService.getIdentityClaims());
-          } else {
-            console.log('No valid token available');
-          }
-        })
-        .catch((err) => console.error('Error during OAuth2 login', err));
-      this.oAuthService.showDebugInformation = true;
+      this.oAuthService.loadDiscoveryDocumentAndTryLogin();
     }
 
     this.oAuthService.setupAutomaticSilentRefresh();
@@ -104,5 +96,16 @@ export class AuthService {
       return this.oAuthService.hasValidIdToken();
     }
     return false;
+  }
+
+  private checkUserInLocalStorage(): void {
+    if (this.isBrowser) {
+      const user = localStorage.getItem('user');
+      if (user) {
+        this.isLoggedInSubject.next(true);
+      } else {
+        this.isLoggedInSubject.next(false);
+      }
+    }
   }
 }

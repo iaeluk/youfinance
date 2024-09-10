@@ -22,19 +22,13 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.authService.isLoggedIn$.subscribe((isLoggedIn) => {
       console.log('isLoggedIn: ', isLoggedIn);
-      console.log(this.authService.getProfile());
       this.isLoggedIn = isLoggedIn;
-      if (this.isLoggedIn) {
-        const user = this.authService.getProfile();
-        if (user) {
-          this.name = user['given_name'];
-          this.email = user['email'];
-          this.picture = user['picture'];
-        }
-      } else {
-        this.name = '';
-        this.email = '';
-        this.picture = '';
+      const user = localStorage.getItem('user');
+      if (user) {
+        const parsedUser = JSON.parse(user);
+        this.name = parsedUser.name || '';
+        this.email = parsedUser.email || '';
+        this.picture = parsedUser.picture || '';
       }
     });
   }

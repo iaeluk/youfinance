@@ -32,16 +32,12 @@ export class UserComponent implements AfterContentChecked {
 
     console.log('Profile: ', this.authService.getProfile());
 
-    const user = this.authService.getProfile();
-
+    const user = localStorage.getItem('user');
     if (user) {
-      this.name = user['name'];
-      this.email = user['email'];
-      this.picture = user['picture'];
-
-      console.log(this.picture);
-    } else {
-      console.log('Usuário não logado ou perfil não disponível');
+      const parsedUser = JSON.parse(user);
+      this.name = parsedUser.name || '';
+      this.email = parsedUser.email || '';
+      this.picture = parsedUser.picture || '';
     }
   }
 
