@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/user.model';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class UserService {
   );
   user$ = this.userSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   private loadUserFromLocalStorage() {
     if (typeof window !== 'undefined') {
@@ -27,6 +28,7 @@ export class UserService {
   setUser(user: any) {
     if (typeof window !== 'undefined') {
       localStorage.setItem('user', JSON.stringify(user));
+      this.router.navigate(['banks']);
       this.userSubject.next(user);
     }
   }

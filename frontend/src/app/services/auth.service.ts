@@ -21,7 +21,7 @@ export class AuthService {
         issuer: 'https://accounts.google.com',
         strictDiscoveryDocumentValidation: false,
         clientId: environment.clientId,
-        redirectUri: window.location.origin + '/login',
+        redirectUri: window.location.origin + '/banks',
         scope: 'profile email openid',
         responseType: 'id_token token',
         silentRefreshRedirectUri:

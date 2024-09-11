@@ -4,6 +4,8 @@ import { Bank } from '../../models/bank.model';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { UserService } from '../../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-banks',
@@ -14,6 +16,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 })
 export class BanksComponent implements OnInit {
   bankService = inject(BankService);
+  userService = inject(UserService);
+  router = inject(Router);
   banks: Bank[] = [];
   isLoading = true;
 
@@ -26,7 +30,31 @@ export class BanksComponent implements OnInit {
       localStorage.setItem('activeButton', 'banks');
     }
 
-    this.getBanks();
+    this.handleAuthCallback();
+  }
+
+  private handleAuthCallback() {
+    if (typeof window !== 'undefined') {
+      const fragment = window.location.hash;
+      const params = new URLSearchParams(fragment.slice(1));
+
+      const accessToken = params.get('access_token');
+      const idToken = params.get('id_token');
+
+      if (accessToken) {
+        localStorage.setItem('access_token', accessToken);
+      }
+
+      if (idToken) {
+        localStorage.setItem('id_token', idToken);
+        this.userService.getUser().subscribe((user) => {
+          this.userService.setUser(user);
+        });
+        this.getBanks();
+      } else {
+        this.router.navigate(['/login']);
+      }
+    }
   }
 
   getBanks() {
