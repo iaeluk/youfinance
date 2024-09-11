@@ -26,11 +26,19 @@ export class BanksComponent implements OnInit {
   creditLimit: number | undefined = undefined;
 
   ngOnInit() {
+    this.handleAuthCallback();
+
+    this.userService.user$.subscribe((user) => {
+      if (user) {
+        this.getBanks();
+      } else {
+        this.router.navigate(['/login']);
+      }
+    });
+
     if (typeof window !== 'undefined') {
       localStorage.setItem('activeButton', 'banks');
     }
-
-    this.handleAuthCallback();
   }
 
   private handleAuthCallback() {
@@ -50,9 +58,6 @@ export class BanksComponent implements OnInit {
         this.userService.getUser().subscribe((user) => {
           this.userService.setUser(user);
         });
-        this.getBanks();
-      } else {
-        this.router.navigate(['/login']);
       }
     }
   }
